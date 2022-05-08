@@ -23,4 +23,4 @@ require_once __DIR__  . '/../../../../core/php/core.inc.php';
 */
 
 // require_once __DIR__  . '/../../3rdParty/3rdparty/weatherlink-v2-api-sdk-php-main/src/weatherlink_v2_api_sdk/signature/SignatureCalculator.php';
-// require_once __DIR__  . '/../class/template/UrlBuilderv2.class.php';
+// require_once __DIR__  . '/../class/plmet/UrlBuilderv2.class.php';

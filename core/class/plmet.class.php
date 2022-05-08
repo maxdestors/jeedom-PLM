@@ -18,7 +18,7 @@
 /* * ***************************Includes********************************* */
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
-class template extends eqLogic {
+class plmet extends eqLogic {
   /*     * *************************Attributs****************************** */
 
   /*
@@ -113,7 +113,7 @@ class template extends eqLogic {
   public function postSave() {
     $info = $this->getCmd(null, 'story');
     if (!is_object($info)) {
-      $info = new templateCmd();
+      $info = new plmetCmd();
       $info->setName(__('Histoire', __FILE__));
     }
     $info->setLogicalId('story');
@@ -124,7 +124,7 @@ class template extends eqLogic {
 
     $refresh = $this->getCmd(null, 'refresh');
     if (!is_object($refresh)) {
-      $refresh = new templateCmd();
+      $refresh = new plmetCmd();
       $refresh->setName(__('Rafraichir', __FILE__));
     }
     $refresh->setEqLogic_id($this->getId());
@@ -177,17 +177,17 @@ class template extends eqLogic {
 
   public function getET() {
     $param1 = $this->getConfiguration("param1");
-    log::add('template', 'debug', 'Refresh param1='.print_r($param1, true));
+    log::add('plmet', 'debug', 'Refresh param1='.print_r($param1, true));
     $param2 = $this->getConfiguration("param2");
-    log::add('template', 'debug', 'Refresh param2='.print_r($param2, true));
+    log::add('plmet', 'debug', 'Refresh param2='.print_r($param2, true));
     $type = $this->getConfiguration("type");
-    log::add('template', 'debug', 'Refresh type='.print_r($type, true));
+    log::add('plmet', 'debug', 'Refresh type='.print_r($type, true));
 
     $this->getConfiguration("type");
     $builder = new UrlBuilderv2('qtxx3akao8cbppvrszygtvtj7hzzjfvp', 'sdtpxwfglvxygc7po3wksksi54dnejp9');
     $url = $builder->getFullUrl('/stations', []);
     $data = file_get_contents($url);
-    log::add('template', 'debug', 'Refresh data='.print_r($data, true));
+    log::add('plmet', 'debug', 'Refresh data='.print_r($data, true));
     $json = json_decode($data);
     return $json->generated_at;
   }
@@ -197,7 +197,7 @@ class template extends eqLogic {
 
 }
 
-class templateCmd extends cmd {
+class plmetCmd extends cmd {
   /*     * *************************Attributs****************************** */
 
   /*
@@ -222,7 +222,7 @@ class templateCmd extends cmd {
     switch ($this->getLogicalId()) { //vérifie le logicalid de la commande
       case 'refresh': // LogicalId de la commande rafraîchir que l’on a créé dans la méthode Postsave de la classe vdm .
         $info = $eqLogic->getET(); //On lance la fonction randomVdm() pour récupérer une vdm et on la stocke dans la variable $info
-        log::add('template', 'debug', 'Refresh info='.$info);
+        log::add('plmet', 'debug', 'Refresh info='.$info);
         $eqLogic->checkAndUpdateCmd('story', $info); //on met à jour la commande avec le LogicalId "story"  de l'eqlogic
         break;
     }
