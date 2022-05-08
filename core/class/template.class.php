@@ -62,8 +62,25 @@ class template extends eqLogic {
 
   /*
   * Fonction exécutée automatiquement toutes les heures par Jeedom
-  public static function cronHourly() {}
   */
+  public static function cronHourly($_eqLogic_id = null) {
+		if ($_eqLogic_id == null) { // La fonction n’a pas d’argument donc on recherche tous les équipements du plugin
+			$eqLogics = self::byType('vdm', true);
+		} else { // La fonction a l’argument id(unique) d’un équipement(eqLogic
+			$eqLogics = [self::byId($_eqLogic_id)];
+		}		  
+	
+		foreach ($eqLogics as $eq) { //parcours tous les équipements du plugin
+			if ($eq->getIsEnable() == 1) { //vérifie que l'équipement est acitf
+				$cmd = $eq->getCmd(null, 'refresh'); //retourne la commande "refresh si elle existe
+				if (!is_object($cmd)) { //Si la commande n'existe pas
+					continue; //continue la boucle
+				}
+				$cmd->execCmd(); // la commande existe on la lance
+			}
+		}
+	}
+
 
   /*
   * Fonction exécutée automatiquement tous les jours par Jeedom
@@ -158,8 +175,15 @@ class template extends eqLogic {
   }
   */
 
-  public function randomVdm() {
-    // $url = "https://api.weatherlink.com/v2/stations?api-key=qtxx3akao8cbppvrszygtvtj7hzzjfvp&t=1652029011&api-signature=80d28c6116ae604cc2bc2e4b72fde89f3fcfff249c5886a806e87f918241bc31";
+  public function getET() {
+    $param1 = $this->getConfiguration("param1");
+    log::add('template', 'debug', 'Refresh param1='.print_r($param1, true));
+    $param2 = $this->getConfiguration("param2");
+    log::add('template', 'debug', 'Refresh param2='.print_r($param2, true));
+    $type = $this->getConfiguration("type");
+    log::add('template', 'debug', 'Refresh type='.print_r($type, true));
+
+    $this->getConfiguration("type");
     $builder = new UrlBuilderv2('qtxx3akao8cbppvrszygtvtj7hzzjfvp', 'sdtpxwfglvxygc7po3wksksi54dnejp9');
     $url = $builder->getFullUrl('/stations', []);
     $data = file_get_contents($url);
@@ -194,13 +218,13 @@ class templateCmd extends cmd {
 
   // Exécution d'une commande
   public function execute($_options = array()) {
-    $eqlogic = $this->getEqLogic(); //récupère l'éqlogic de la commande $this
+    $eqLogic = $this->getEqLogic(); //récupère l'éqlogic de la commande $this
     switch ($this->getLogicalId()) { //vérifie le logicalid de la commande
       case 'refresh': // LogicalId de la commande rafraîchir que l’on a créé dans la méthode Postsave de la classe vdm .
-      $info = $eqlogic->randomVdm(); //On lance la fonction randomVdm() pour récupérer une vdm et on la stocke dans la variable $info
-      log::add('template', 'debug', 'Refresh info='.$info);
-      $eqlogic->checkAndUpdateCmd('story', $info); //on met à jour la commande avec le LogicalId "story"  de l'eqlogic
-      break;
+        $info = $eqLogic->getET(); //On lance la fonction randomVdm() pour récupérer une vdm et on la stocke dans la variable $info
+        log::add('template', 'debug', 'Refresh info='.$info);
+        $eqLogic->checkAndUpdateCmd('story', $info); //on met à jour la commande avec le LogicalId "story"  de l'eqlogic
+        break;
     }
   }
 
