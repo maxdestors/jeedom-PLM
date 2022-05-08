@@ -21,3 +21,6 @@ require_once __DIR__  . '/../../../../core/php/core.inc.php';
 * Fichier d’inclusion si vous avez plusieurs fichiers de class ou 3rdParty à inclure
 *
 */
+
+// require_once __DIR__  . '/../../3rdParty/3rdparty/weatherlink-v2-api-sdk-php-main/src/weatherlink_v2_api_sdk/signature/SignatureCalculator.php';
+// require_once __DIR__  . '/../class/template/UrlBuilderv2.class.php';

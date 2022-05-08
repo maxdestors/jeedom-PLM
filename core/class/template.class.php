@@ -159,17 +159,13 @@ class template extends eqLogic {
   */
 
   public function randomVdm() {
-    $url = "http://www.viedemerde.fr/aleatoire";
+    // $url = "https://api.weatherlink.com/v2/stations?api-key=qtxx3akao8cbppvrszygtvtj7hzzjfvp&t=1652029011&api-signature=80d28c6116ae604cc2bc2e4b72fde89f3fcfff249c5886a806e87f918241bc31";
+    $builder = new UrlBuilderv2('qtxx3akao8cbppvrszygtvtj7hzzjfvp', 'sdtpxwfglvxygc7po3wksksi54dnejp9');
+    $url = $builder->getFullUrl('/stations', []);
     $data = file_get_contents($url);
     log::add('template', 'debug', 'Refresh data='.print_r($data, true));
-    @$dom = new DOMDocument();
-    libxml_use_internal_errors(true);
-    $dom->loadHTML($data);
-    libxml_use_internal_errors(false);
-    $xpath = new DOMXPath($dom);
-    $divs = $xpath->query('//article//a');
-    log::add('template', 'debug', 'Refresh divs='.print_r($divs, true));
-    return $divs[0]->nodeValue;
+    $json = json_decode($data);
+    return $json->generated_at;
   }
   
 
@@ -201,7 +197,6 @@ class templateCmd extends cmd {
     $eqlogic = $this->getEqLogic(); //récupère l'éqlogic de la commande $this
     switch ($this->getLogicalId()) { //vérifie le logicalid de la commande
       case 'refresh': // LogicalId de la commande rafraîchir que l’on a créé dans la méthode Postsave de la classe vdm .
-      log::add('homebridge', 'info', 'Démon homebridge lancé');
       $info = $eqlogic->randomVdm(); //On lance la fonction randomVdm() pour récupérer une vdm et on la stocke dans la variable $info
       log::add('template', 'debug', 'Refresh info='.$info);
       $eqlogic->checkAndUpdateCmd('story', $info); //on met à jour la commande avec le LogicalId "story"  de l'eqlogic
@@ -211,4 +206,39 @@ class templateCmd extends cmd {
 
   /*     * **********************Getteur Setteur*************************** */
 
+}
+
+
+class UrlBuilderv2 {
+
+  private $baseUrl = 'https://api.weatherlink.com/v2';
+  private $apiKey;
+  private $apiSecret;
+
+  public function __construct($apiKey, $apiSecret) {
+      $this->apiKey = $apiKey;
+      $this->apiSecret = $apiSecret;
+  }
+
+  public function getFullUrl($subUrl, $inputParameters) {
+      $parameters = array_merge(
+          $inputParameters,
+          [
+              "api-key" => $this->apiKey,
+              "t" => time().''
+          ]
+      );
+      $parameters['api-signature'] = $this->calculateSignature($parameters);
+      return $this->baseUrl . $subUrl . '?' . http_build_query($parameters);
+  }
+
+  private function calculateSignature($parametersToHash) {
+      ksort($parametersToHash);
+      $stringToHash = "";
+      foreach ($parametersToHash as $parameterName => $parameterValue) {
+          $stringToHash = $stringToHash . $parameterName . $parameterValue;
+      }
+      $apiSignature = hash_hmac("sha256", $stringToHash, $this->apiSecret);
+      return $apiSignature;
+  }
 }
