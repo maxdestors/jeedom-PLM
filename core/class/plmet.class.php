@@ -176,16 +176,11 @@ class plmet extends eqLogic {
   */
 
   public function getET() {
-    $param1 = $this->getConfiguration("param1");
-    log::add('plmet', 'debug', 'Refresh param1='.print_r($param1, true));
-    $param2 = $this->getConfiguration("param2");
-    log::add('plmet', 'debug', 'Refresh param2='.print_r($param2, true));
-    $type = $this->getConfiguration("type");
-    log::add('plmet', 'debug', 'Refresh type='.print_r($type, true));
-
-    $this->getConfiguration("type");
-    $builder = new UrlBuilderv2('qtxx3akao8cbppvrszygtvtj7hzzjfvp', 'sdtpxwfglvxygc7po3wksksi54dnejp9');
+    $apikey = $this->getConfiguration("apikey");
+    $apisecret = $this->getConfiguration("apisecret");
+    $builder = new UrlBuilderv2($apikey, $apisecret);
     $url = $builder->getFullUrl('/stations', []);
+    log::add('plmet', 'debug', 'Refresh url='.print_r($url, true));
     $data = file_get_contents($url);
     log::add('plmet', 'debug', 'Refresh data='.print_r($data, true));
     $json = json_decode($data);
@@ -245,13 +240,16 @@ class UrlBuilderv2 {
   }
 
   public function getFullUrl($subUrl, $inputParameters) {
+    $time = time().'';
       $parameters = array_merge(
           $inputParameters,
           [
               "api-key" => $this->apiKey,
-              "t" => time().''
+              "t" => $time
           ]
       );
+    log::add('plmet', 'debug', 'Refresh time='.print_r($time, true));
+
       $parameters['api-signature'] = $this->calculateSignature($parameters);
       return $this->baseUrl . $subUrl . '?' . http_build_query($parameters);
   }

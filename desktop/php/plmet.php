@@ -126,21 +126,21 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 
-							<legend><i class="fas fa-cogs"></i> {{Paramètres spécifiques}}</legend>
+							<legend><i class="fas fa-cogs"></i> {{Paramètres weatherlink}}</legend>
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{Nom du paramètre n°1}}
-									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez le paramètre n°1 de l'équipement}}"></i></sup>
+								<label class="col-sm-4 control-label">{{Api key}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez l'Api key}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
-									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="param1" placeholder="{{Paramètre n°1}}">
+									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="apikey" placeholder="apikey">
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-4 control-label"> {{Mot de passe}}
-									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez le mot de passe}}"></i></sup>
+								<label class="col-sm-4 control-label">{{Api Secret}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez l'Api Secret}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
-									<input type="text" class="eqLogicAttr form-control inputPassword" data-l1key="configuration" data-l2key="password">
+									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="apisecret" placeholder="apisecret">
 								</div>
 							</div>
 							<!-- Exemple de champ de saisie du cron d'auto-actualisation avec assistant -->
